@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+}
+
+body {
+  /* 空の色（上: 青 → 下: あかるい黄色） */
+  background: linear-gradient(180deg, #a5d8ff 0%, #d7f0ff 55%, #fff6cf 100%) fixed;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* 完了タスクのタイトルをバイキンマンが消す（components/erasable-title.tsx） */
+.erase-cover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+}
+
+.baikin {
+  left: 100%;
+}
+
+.erase-anim .erase-cover {
+  animation: erase-sweep 1.2s ease-in-out both;
+}
+
+.erase-anim .baikin {
+  animation: baikin-run 1.2s ease-in-out both;
+}
+
+/* バイキンマンから逃げるバタコさんとアンパンマン号。足元をバイキンマンの足元にそろえる */
+.chaser {
+  opacity: 0;
+  left: 0;
+}
+
+.chaser-batako {
+  --ahead: 34px;
+  top: calc(50% + 2px);
+  translate: -50% -50%;
+}
+
+.chaser-car {
+  --ahead: 92px;
+  top: calc(50% + 8px);
+  translate: -50% -50%;
+}
+
+.erase-anim .chaser {
+  animation: chase-run 1.2s ease-in-out both;
+}
+
+.chaser-bob {
+  transform-box: fill-box;
+}
+
+.erase-anim .chaser-bob {
+  animation: chase-bob 0.15s ease-in-out 8 alternate both;
+}
+
+@keyframes chase-run {
+  from {
+    left: calc(0% + var(--ahead));
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  to {
+    left: calc(100% + var(--ahead) + 70px);
+    opacity: 0;
+  }
+}
+
+@keyframes chase-bob {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+.baikin-leg {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+
+.erase-anim .baikin-leg-l {
+  animation: baikin-step 0.15s ease-in-out 8 alternate both;
+}
+
+.erase-anim .baikin-leg-r {
+  animation: baikin-step 0.15s ease-in-out 8 alternate-reverse both;
+}
+
+@keyframes baikin-step {
+  from {
+    transform: rotate(-25deg);
+  }
+  to {
+    transform: rotate(25deg);
+  }
+}
+
+@keyframes erase-sweep {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes baikin-run {
+  from {
+    left: 0;
+    transform: translate(-50%, -50%) rotate(-12deg);
+  }
+  50% {
+    transform: translate(-50%, -62%) rotate(10deg);
+  }
+  to {
+    left: 100%;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .erase-anim .erase-cover,
+  .erase-anim .baikin {
+    animation-duration: 0.01s;
+  }
+
+  .erase-anim .baikin-leg,
+  .erase-anim .chaser,
+  .erase-anim .chaser-bob {
+    animation: none;
+  }
+}

@@ -1,0 +1,14 @@
+# このPC専用の設定（パスや権限設定）
+.claude/
+
+# このアプリと無関係のファイル
+Hello/
+
+# 秘密情報（アプリ側の task-app/.gitignore でも .env* を除外している）
+.env
+.env.*
+!.env.example
+
+# OS・エディタ
+.DS_Store
+Thumbs.db

@@ -146,6 +146,15 @@ function persist(job: () => Promise<void>) {
   });
 }
 
+/**
+ * 保持しているデータを捨てる。ログイン・ログアウトでユーザーが変わるときに呼ぶ
+ * （前のユーザーのデータが残らないように。次に画面が開いたとき、読み込み直す）。
+ */
+export function resetStore() {
+  loaded = false;
+  state = SERVER_STATE;
+}
+
 export function dismissError() {
   state = { ...state, error: null };
   emit();

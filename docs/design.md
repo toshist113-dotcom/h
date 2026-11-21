@@ -166,6 +166,16 @@ URLクエリで状態を保持（共有・リロードに強い）。
 4. `AUTH_ENABLED=true` に切替、`DEV_USER_ID` 関連のコードと環境変数を削除
 5. 2ユーザーでRLSを確認し、未ログインで `/tasks` に入れないことを確認
 
+#### 8.2.1 実装状況（ログイン機能のコード）
+ログインのコードは作成済みで、`NEXT_PUBLIC_AUTH_ENABLED=true` のときだけ働く（false の間は画面も出ない）。
+- 画面: `/login` `/signup` `/reset-password` `/update-password`（`src/app/(auth)/`、フォームは `src/components/auth/`）
+- メールのリンクの戻り先: `src/app/auth/callback/route.ts`（コードをログイン情報に交換。移動先は `safeNextPath` でサイト内のパスに限定）
+- 保護: `src/proxy.ts`（Next.js 16 では middleware ではなく proxy）。未ログインは `/login` へ、ログイン済みが `/login` `/signup` を開くと `/tasks` へ
+- ログアウト: ヘッダーのボタン（ログイン有効時のみ表示）。ログイン・ログアウト時は `resetStore()` で前のユーザーのデータを捨てる
+- 認証の入口: `lib/auth-config.ts`（フラグ・公開パス）、`lib/auth.ts`（ユーザーID）、`lib/auth-errors.ts`（日本語のエラー文と入力チェック）
+- パスワードは8文字以上。登録・再設定のメールは、登録の有無が分からない文言にしている
+- 未実施: 本番用Supabaseでの実機確認（ログイン成功、メール確認、再設定、ログアウト、2ユーザーでのRLS確認）
+
 ### 8.3 公開時の設計
 - `middleware.ts` で全リクエストのセッションを更新し、`(app)` 配下は未ログインなら `/login` へ。
 - Supabase側設定: Site URL を本番URL、Redirect URLs にプレビュー/ローカルを追加。

@@ -11,7 +11,8 @@
 ## 作業の進め方
 - 実装前に要件定義書と設計書を読み、MVP対象外の機能は作らない。要件を変える場合は先にドキュメントを更新する。
 - 今は**フロントエンドを先に作る**。データはまずモック（ローカル状態）で動かし、Supabase接続は後で差し替える。
-- **ログイン機能は開発中は作らない・表示しない。** 公開前に追加する（設計書 8.2）。認証なしのまま本番公開しない。
+- **ログイン機能のコードは作成済みだが、`NEXT_PUBLIC_AUTH_ENABLED=true` のときだけ有効**（既定は false で画面も出ない。設計書 8.2.1）。認証なしのまま本番公開しない。公開前に、本番Supabaseでの実機確認と開発用の全許可設定の撤去（`supabase/dev/remove_dev_access.sql`）が必要。
+- このバージョンの Next.js は `middleware` ではなく `proxy`（`src/proxy.ts`）。コードを書く前に `task-app/node_modules/next/dist/docs/` を確認する。
 - 起動は `task-app/` で `npm run dev`。Node.js は `%LOCALAPPDATA%\Programs\nodejs` に入れてある（PATHに無い場合は追加する）。
 - データ層は `task-app/src/lib/store.ts`。Supabase の接続情報（`.env.local`）があれば Supabase、無ければ localStorage のモックで動く。SQLは `supabase/`、手順は `supabase/README.md`。
 - `supabase/dev/` は開発用プロジェクト専用。本番プロジェクトには流さない。

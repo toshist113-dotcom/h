@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { AUTH_ENABLED } from "@/lib/auth-config";
+import { resetStore } from "@/lib/store";
+import { getSupabase } from "@/lib/supabase/client";
 
 const NAV = [
   { href: "/tasks", label: "タスク" },
@@ -10,6 +14,17 @@ const NAV = [
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    await getSupabase().auth.signOut();
+    resetStore();
+    router.replace("/login");
+    router.refresh();
+  }
+
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-6 px-4">
@@ -35,6 +50,17 @@ export function Header() {
             );
           })}
         </nav>
+        {/* ログインが有効なときだけ表示（開発中は出さない） */}
+        {AUTH_ENABLED && (
+          <button
+            type="button"
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="ml-auto rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+          >
+            {signingOut ? "ログアウト中…" : "ログアウト"}
+          </button>
+        )}
       </div>
     </header>
   );

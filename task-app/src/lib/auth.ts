@@ -2,9 +2,10 @@
  * 現在のユーザーIDを返す、認証の入口（開発中はログインなし → 公開前にログインへ切替）。
  * データ層はユーザーIDを必ずここから取る。ログイン追加時はこのファイルの方針だけ変えればよい。
  */
+import { AUTH_ENABLED } from "@/lib/auth-config";
 import { getSupabase } from "@/lib/supabase/client";
 
-export const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED === "true";
+export { AUTH_ENABLED };
 
 // supabase/dev/dev_open_access.sql が作る開発用ユーザーと同じID
 const DEV_USER_ID =
